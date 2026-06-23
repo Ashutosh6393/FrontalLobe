@@ -2,11 +2,31 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project status
+## Commands
 
-This repo is **pre-scaffold**. The only committed files are `PRD.md` (the full product spec) and `.gitignore`. There is no `package.json`, no source tree, and therefore **no build/lint/test commands yet** — do not invent them. When scaffolding, the agreed stack is Next.js + TypeScript + Tailwind CSS + shadcn/ui (frontend) and Supabase (Postgres + Auth). Read `PRD.md` before making architectural decisions; it is the source of truth for scope and the deferred-vs-MVP line.
+Package manager is **pnpm**.
 
-Once the project is scaffolded, update this file with the real `dev` / `build` / `lint` / `test` commands and how to run a single test.
+- `pnpm dev` — run the dev server (http://localhost:3000)
+- `pnpm build` — production build (run before deploy; also type-checks)
+- `pnpm start` — serve the production build
+- `pnpm lint` — ESLint
+- `pnpm test` — run the Vitest suite once
+- `pnpm test:watch` — Vitest in watch mode
+- Run a single test file: `pnpm test src/lib/games.test.ts`
+
+## Stack & layout
+
+Next.js **16** (App Router) + TypeScript + Tailwind **v4** + shadcn/ui (Base UI, lucide icons) for the frontend; Supabase (Postgres + Auth) for logged-in storage.
+
+- `src/app/` — routes; root `layout.tsx` (dark mode is the default via `class="dark"` on `<html>`), `globals.css` (theme tokens, incl. `--state-wait/go/success/fail`)
+- `src/components/` — `game-card.tsx`; `ui/` holds shadcn primitives
+- `src/lib/games.ts` — the single per-game config seam (future `lower_is_better` / unit / sanity bounds live here)
+- `src/lib/supabase/client.ts` — browser Supabase client (reads `NEXT_PUBLIC_SUPABASE_*`)
+- Env: copy `.env.example` → `.env.local` and fill in the Supabase URL + anon key
+
+> Next.js 16 has breaking changes vs. older docs (async `params`/`cookies`/`headers`, caching defaults). Consult `node_modules/next/dist/docs/` before writing new route/server code.
+
+Read `PRD.md` before making architectural decisions; it is the source of truth for scope and the deferred-vs-MVP line.
 
 ## What this app is
 
